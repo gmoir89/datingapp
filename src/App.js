@@ -1,3 +1,4 @@
+import React from "react";
 import { HashRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { StudyProvider } from "./context/StudyContext";
 import RequireConsent from "./components/RequireConsent";
@@ -6,18 +7,20 @@ import RatingPage from "./pages/RatingPage";
 import DebriefPage from "./pages/DebriefPage";
 
 /**
- * App.js – sets up routing and guards
- * Wrapped in StudyProvider for shared consent state.
+ * App.js – Main entry point of the application.
+ * Wraps the router in a StudyProvider to manage consent state globally.
+ * Uses HashRouter to support GitHub Pages hosting.
+ * Protects /rate and /debrief routes via RequireConsent guard.
  */
 function App() {
   return (
     <StudyProvider>
       <Router>
         <Routes>
-          {/* Public consent page */}
+          {/* Public: Consent must be given first */}
           <Route path="/" element={<ConsentPage />} />
 
-          {/* Protected rating page: requires consent */}
+          {/* Protected: Rating page requires consent */}
           <Route
             path="/rate"
             element={
@@ -27,7 +30,7 @@ function App() {
             }
           />
 
-          {/* Protected debrief page: also requires consent */}
+          {/* Protected: Debrief page requires consent */}
           <Route
             path="/debrief"
             element={
@@ -37,7 +40,7 @@ function App() {
             }
           />
 
-          {/* Redirect any unknown path to consent */}
+          {/* Fallback: redirect unknown routes to consent */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
@@ -46,8 +49,8 @@ function App() {
 }
 
 export default App;
-// This is the main entry point for the web app.
-// It sets up the routing for the consent, rating, and debrief pages,
-// and wraps everything in the StudyProvider to manage consent state.
-// The RequireConsent component ensures that users cannot access the rating or debrief pages
-// without first giving consent on the consent page.
+// This is the main entry point of the React application.
+// It sets up the routing and context provider for managing study consent state.
+// The app uses HashRouter to ensure compatibility with GitHub Pages hosting.
+// The RequireConsent component protects the rating and debrief pages,
+// ensuring users have given consent before accessing those routes.

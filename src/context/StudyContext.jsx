@@ -1,9 +1,11 @@
-import { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 
+// 1. Create the context
 const StudyContext = createContext();
 
+// 2. Provider component wraps your app
 export function StudyProvider({ children }) {
-  // memory-only consent flag:
+  // Starts false; flips true once they hit “Let’s Go”
   const [consentGiven, setConsentGiven] = useState(false);
 
   return (
@@ -13,12 +15,7 @@ export function StudyProvider({ children }) {
   );
 }
 
+// 3. Hook for consuming
 export function useStudy() {
   return useContext(StudyContext);
-}
-export function withStudy(Component) {
-  return function WrappedComponent(props) {
-    const study = useStudy();
-    return <Component {...props} study={study} />;
-  };
 }
