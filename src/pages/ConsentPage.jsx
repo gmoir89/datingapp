@@ -1,7 +1,13 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStudy } from "../context/StudyContext";
 
+/**
+ * ConsentPage.jsx
+ * - Displays study information and Abertay logo
+ * - Requires user to check the consent box
+ * - Only then enables "Let's Go" to proceed and flips consentGiven
+ */
 export default function ConsentPage() {
   const [consent, setConsent] = useState(false);
   const navigate = useNavigate();
@@ -24,14 +30,11 @@ export default function ConsentPage() {
 
       <div className="bg-white rounded-3xl shadow-xl p-8 max-w-xl space-y-4 text-sm leading-relaxed">
         <h1 className="text-2xl font-bold text-center">
-          Project title: AI-Driven Fake Profile Detection in Online Dating Platforms Using
-          Reverse Image Lookup and Text-Based Analysis
+          Project title: AI-Driven Fake Profile Detection in Online Dating Platforms Using Reverse Image Lookup and Text-Based Analysis
         </h1>
         <p className="font-semibold">Researcher name(s): Graeme Moir</p>
 
-        <p>
-          Thank you for taking part in this research project; your contribution is valuable.
-        </p>
+        <p>Thank you for taking part in this research project; your contribution is valuable.</p>
 
         <h2 className="font-semibold">Nature of research</h2>
         <p>
@@ -44,9 +47,7 @@ export default function ConsentPage() {
         </p>
 
         <h2 className="font-semibold">Sources of support</h2>
-        <p>
-          If taking part in the research has raised any issues for you personally, you can contact….
-        </p>
+        <p>If taking part in the research has raised any issues for you personally, you can contact….</p>
 
         {/* Consent checkbox */}
         <label className="flex items-start gap-2 pt-2">
@@ -84,5 +85,5 @@ export default function ConsentPage() {
     </div>
   );
 }
-// This is the consent page for the study, where users can read about the research and give their consent to participate.
-// It includes a checkbox for consent and a button to proceed to the rating page.
+// This page handles user consent before they can proceed to the rating page.
+// It displays the study information, requires the user to check a consent box,
