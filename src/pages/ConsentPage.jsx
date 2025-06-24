@@ -1,22 +1,38 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "../firebase";
 import { useStudy } from "../context/StudyContext";
 
 /**
  * ConsentPage.jsx
  * - Displays study information and Abertay logo
  * - Requires user to check the consent box
+ * - Creates a new participant in Firestore and stores the generated ID
  * - Only then enables "Let's Go" to proceed and flips consentGiven
  */
 export default function ConsentPage() {
   const [consent, setConsent] = useState(false);
   const navigate = useNavigate();
-  const { setConsentGiven } = useStudy();
+  const { setConsentGiven, setParticipantId } = useStudy();
 
-  const handleProceed = () => {
+  const handleProceed = async () => {
     if (!consent) return;
-    setConsentGiven(true);
-    navigate("/rate", { replace: true });
+
+    try {
+      // create a new participant record in Firestore
+      const docRef = await addDoc(collection(db, "participants"), {
+        consentGiven: true,
+        consentAt: serverTimestamp(),
+      });
+      // save that participant ID for later use
+      setParticipantId(docRef.id);
+      setConsentGiven(true);
+      navigate("/rate", { replace: true });
+    } catch (error) {
+      console.error("Error creating participant record:", error);
+      alert("There was an error setting up your participation. Please try again.");
+    }
   };
 
   return (
@@ -38,7 +54,12 @@ export default function ConsentPage() {
 
         <h2 className="font-semibold">Nature of research</h2>
         <p>
-          The aim of this website is to gauge how easy it is for a standard user to tell what appears to be a ‘real’ dating profile and what is ‘fake’.
+          The aim of this website is to gauge how easy it is for a standard user to tell what appears to be a ‘real’ dating profile and what is ‘fake’. You will see 30 profiles and it is your job to decide whether you think the profile is real, ai, or are not sure.
+        </p>
+
+        <h2 className="font-semibold">Instructions</h2>
+        <p>
+          You will see 30 profiles and it is your job to decide whether you think the profile is real, AI-generated, or you are not sure. Select one of the three options for each profile, then use the slider to indicate how confident you are in your choice. When you are ready to move onto the next profile, click the "Next" button. You can quit the study at any time by closing the browser tab or clicking the "Quit" button. If you quit, your responses will not be saved.
         </p>
 
         <h2 className="font-semibold">Data</h2>
@@ -85,5 +106,5 @@ export default function ConsentPage() {
     </div>
   );
 }
-// This page handles user consent before they can proceed to the rating page.
-// It displays the study information, requires the user to check a consent box,
+// Note: Ensure you have the necessary Firebase setup and context provider in your app for this to work correctly.
+// This component assumes you have a StudyContext that provides setConsentGiven and setParticipantId functions
