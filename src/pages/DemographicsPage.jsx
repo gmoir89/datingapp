@@ -12,14 +12,14 @@ export default function DemographicsPage() {
   const navigate = useNavigate();
   const { participantId, consentGiven } = useStudy();
 
-  // Route guard: ensure consent stage completed
+  // Route guard: ensure consent stage completed before demographics
   useEffect(() => {
     if (!consentGiven || !participantId) {
       navigate("/", { replace: true });
     }
   }, [consentGiven, participantId, navigate]);
 
-  // Form state
+  // Form state for demographic fields
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [education, setEducation] = useState("");
@@ -28,23 +28,18 @@ export default function DemographicsPage() {
   const [country, setCountry] = useState("");
   const [saving, setSaving] = useState(false);
 
+  // Check that all fields are selected
   const allSelected = [age, gender, education, ethnicity, techExperience, country]
     .every((field) => field !== "");
 
+  // Proceed to rating page after saving demographics
   const handleProceed = async () => {
     if (!allSelected || !participantId) return;
     setSaving(true);
     try {
       const participantRef = doc(db, "participants", participantId);
       await updateDoc(participantRef, {
-        demographics: {
-          age,
-          gender,
-          education,
-          ethnicity,
-          techExperience,
-          country,
-        },
+        demographics: { age, gender, education, ethnicity, techExperience, country },
         demographicsAt: serverTimestamp(),
       });
       navigate("/rate", { replace: true });
@@ -55,7 +50,7 @@ export default function DemographicsPage() {
     }
   };
 
-  // Helper to render a select dropdown
+  // Helper to render a dropdown
   const renderSelect = (label, value, onChange, options) => (
     <label className="block text-sm font-medium text-gray-700 mb-2">
       {label}
@@ -74,6 +69,7 @@ export default function DemographicsPage() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
+      {/* Abertay logo */}
       <img
         src={`${process.env.PUBLIC_URL}/images/abertay-logo.jpg`}
         alt="Abertay University logo"

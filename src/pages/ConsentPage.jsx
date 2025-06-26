@@ -28,7 +28,8 @@ export default function ConsentPage() {
       // save that participant ID for later use
       setParticipantId(docRef.id);
       setConsentGiven(true);
-      navigate("/rate", { replace: true });
+      // navigate to demographics page instead of rating page
+      navigate("/demographics", { replace: true });
     } catch (error) {
       console.error("Error creating participant record:", error);
       alert("There was an error setting up your participation. Please try again.");
@@ -106,5 +107,5 @@ export default function ConsentPage() {
     </div>
   );
 }
-// Note: Ensure you have the necessary Firebase setup and context provider in your app for this to work correctly.
-// This component assumes you have a StudyContext that provides setConsentGiven and setParticipantId functions
+// This component handles the consent process for the study.
+// It displays study information, requires the user to check a consent box,

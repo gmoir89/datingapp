@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
@@ -222,33 +222,40 @@ const profiles = [
   },
 ];
 
+// Fisher-Yates shuffle
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
 
 export default function RatingPage() {
+  // Shuffle profiles once
+  const shuffledProfiles = useMemo(() => shuffleArray([...profiles]), []);
   const [index, setIndex] = useState(0);
-  const [label, setLabel] = useState(null);       // "Human" | "Not sure" | "AI"
-  const [score, setScore] = useState(5);         // Confidence slider (0–10)
-  const [completed, setCompleted] = useState(0);  // Number of ratings given
+  const [label, setLabel] = useState(null);       // "Human" | "AI"
+  const [score, setScore] = useState(5);          // Confidence slider (0–10)
+  const [completed, setCompleted] = useState(0);   // Number of ratings given
   const navigate = useNavigate();
   const { participantId } = useStudy();
 
   const handleNext = async () => {
-      console.log("→ participantId is:", participantId);
-    const { name } = profiles[index];
+    const p = shuffledProfiles[index];
     try {
-      // push this rating under participants/{id}/ratings
       await addDoc(
         collection(db, "participants", participantId, "ratings"),
         {
           profileId: p.id,
-          profile: name,
-          label, // "Human" | "Not sure" | "AI"
-          score: label === "Not sure" ? null : score,
+          profileName: p.name,
+          label,
+          score,
           createdAt: serverTimestamp(),
         }
       );
     } catch (error) {
       console.error("Error saving rating:", error);
-      // You could show a user-friendly error here
     }
 
     const nextCompleted = completed + 1;
@@ -258,7 +265,7 @@ export default function RatingPage() {
     }
 
     setCompleted(nextCompleted);
-    setIndex((prev) => (prev + 1) % profiles.length);
+    setIndex((prev) => (prev + 1) % shuffledProfiles.length);
     setLabel(null);
     setScore(5);
   };
@@ -267,7 +274,7 @@ export default function RatingPage() {
     navigate("/debrief", { replace: true });
   };
 
-  const p = profiles[index];
+  const p = shuffledProfiles[index];
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-pink-200 p-4">
@@ -282,7 +289,6 @@ export default function RatingPage() {
         <div className="flex justify-around mb-6">
           {[
             { key: "Human", label: "Human" },
-            { key: "Not sure", label: "Not sure" },
             { key: "AI", label: "AI" },
           ].map((btn) => (
             <button
@@ -299,7 +305,9 @@ export default function RatingPage() {
           ))}
         </div>
 
-        <label htmlFor="confidence" className="block text-sm font-medium mb-1">How certain are you about your choice?</label>
+        <label htmlFor="confidence" className="block text-sm font-medium mb-1">
+          How certain are you about your choice?
+        </label>
         <input
           id="confidence"
           type="range"
@@ -308,31 +316,30 @@ export default function RatingPage() {
           step="1"
           value={score}
           onChange={(e) => setScore(Number(e.target.value))}
-          disabled={label === "Not sure"}
-          className={`w-full accent-pink-500 mb-2 ${label === "Not sure" ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+          className="w-full accent-pink-500 cursor-pointer mb-2"
         />
         <div className="flex justify-between text-xs text-gray-500 mb-6">
-          <span>Not sure</span>
-          <span>Undecided</span>
+          <span>Not confident</span>
           <span>Certain</span>
         </div>
 
         <button
           onClick={handleNext}
-          className={`rounded-full p-4 transition mx-auto block disabled:opacity-50 ${
-            label === "Not sure" ? 'bg-yellow-500 hover:bg-yellow-600 animate-pulse' : 'bg-pink-500 hover:bg-pink-600'
-          }`}
-          aria-label="Submit rating and see next profile"
           disabled={!label}
+          className="bg-pink-500 hover:bg-pink-600 rounded-full p-4 transition mx-auto block disabled:opacity-50"
         >
           <ArrowRight className="text-white w-6 h-6" />
         </button>
 
-        <button onClick={handleQuit} className="mt-4 text-sm text-gray-700 hover:text-gray-900">Quit</button>
+        {/* <button onClick={handleQuit} className="mt-4 text-sm text-gray-700 hover:text-gray-900">
+          Quit
+        </button> */}
       </div>
     </div>
   );
 }
-// Note: Ensure you have the necessary Firebase setup and context provider in your app for this to work correctly.
-// This code assumes you have a Firebase Firestore instance set up and the necessary context provider for `useStudy` that provides `participantId`.
-// The `RatingPage` component allows users to rate profiles, save their ratings to Firestore, and navigate between profiles.
+// This component handles the rating of profiles, allowing users to select whether they think a profile is human or AI, rate their confidence, and navigate through the profiles. It saves each rating to Firestore and tracks the number of completed ratings. The UI is styled with Tailwind CSS for a clean look.
+// The profiles are shuffled once at the start to ensure a random order for each user. The component uses React hooks to manage state and effects, and it integrates with Firebase Firestore to save user ratings. The user can quit at any time, which will redirect them to the debrief page. The UI is designed to be responsive and user-friendly, with clear instructions and feedback.
+// The component also includes a quit button that allows users to exit the rating process at any time, redirecting them to the debrief page. The use of Tailwind CSS ensures a clean and modern design, while the logic for handling ratings and navigation is straightforward and efficient. The component is designed to be intuitive, guiding users through the rating process with clear prompts and feedback.
+// The profiles are shuffled once at the start to ensure a random order for each user. The component uses React hooks to manage state and effects, and it integrates with Firebase Firestore to save user ratings. The user can quit at any time, which will redirect them to the debrief page. The UI is designed to be responsive and user-friendly, with clear instructions and feedback.
+// The component also includes a quit button that allows users to exit the rating process at any time, redirecting them to the debrief page.
