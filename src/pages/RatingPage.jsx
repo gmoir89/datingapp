@@ -24,7 +24,7 @@ const profiles = [
   {
     id: "chloe",
     name: "Chloe",
-    age: 24,
+    age: 39,
     bio: "Dog mom to a rescue husky who prefers ramen nights and muddy forest hikes. Obsessed with live music—anything from jazz basements to open-air festivals—and I play bass in a weekend folk-rock band. Always down for spontaneous road trips and sampling local tacos in every town we pass through.",
     img: process.env.PUBLIC_URL + "/images/chloe.jpg"
   },
@@ -97,7 +97,7 @@ const profiles = [
   {
     id: "ewan",
     name: "Ewan",
-    age: 35,
+    age: 23,
     bio: "Travel writer who’s called five countries ‘home’. Fluent in three languages, collector of street-food recipes, and passionate about ocean cleanup initiatives. I’ve kayaked past icebergs in Greenland and shared rooftop dinners in Tokyo. Let’s compare bucket-list notes over matcha lattes!",
     img: process.env.PUBLIC_URL + "/images/ewan.jpg"
   },
