@@ -4,8 +4,14 @@ import { updateDoc, doc, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase";
 import { useStudy } from "../context/StudyContext";
 
-const countries = [
-  "Australia", "Canada", "France", "Germany", "India", "United Kingdom", "United States", "Other", "Prefer not to say"
+// Top 20 languages + options
+const languages = [
+  "Arabic", "Bengali", "Chinese", "English", "French", "German", "Hindi", "Italian", "Japanese", "Javanese", "Korean", "Marathi", "Portuguese", "Punjabi", "Russian", "Spanish", "Tamil", "Telugu", "Turkish", "Vietnamese", "Other", "Prefer not to say"
+];
+
+// Dating apps options
+const datingApps = [
+  "Bumble", "Coffee Meets Bagel", "eHarmony", "Grindr", "Happn", "Her", "Hinge", "Match.com", "OkCupid", "Plenty of Fish", "Tinder", "None", "Other", "Prefer not to say"
 ];
 
 export default function DemographicsPage() {
@@ -25,11 +31,12 @@ export default function DemographicsPage() {
   const [education, setEducation] = useState("");
   const [ethnicity, setEthnicity] = useState("");
   const [techExperience, setTechExperience] = useState("");
-  const [country, setCountry] = useState("");
+  const [firstLanguage, setFirstLanguage] = useState("");
+  const [appsUsed, setAppsUsed] = useState([]);
   const [saving, setSaving] = useState(false);
 
-  // Check that all fields are selected
-  const allSelected = [age, gender, education, ethnicity, techExperience, country]
+  // Check that required fields are selected
+  const allSelected = [age, gender, education, ethnicity, techExperience, firstLanguage]
     .every((field) => field !== "");
 
   // Proceed to rating page after saving demographics
@@ -39,7 +46,7 @@ export default function DemographicsPage() {
     try {
       const participantRef = doc(db, "participants", participantId);
       await updateDoc(participantRef, {
-        demographics: { age, gender, education, ethnicity, techExperience, country },
+        demographics: { age, gender, education, ethnicity, techExperience, firstLanguage, appsUsed },
         demographicsAt: serverTimestamp(),
       });
       navigate("/rate", { replace: true });
@@ -50,7 +57,7 @@ export default function DemographicsPage() {
     }
   };
 
-  // Helper to render a dropdown
+  // Helper to render a single-select dropdown
   const renderSelect = (label, value, onChange, options) => (
     <label className="block text-sm font-medium text-gray-700 mb-2">
       {label}
@@ -67,6 +74,31 @@ export default function DemographicsPage() {
     </label>
   );
 
+  // Render checkboxes for dating apps
+  const renderCheckboxGroup = (label, values, onChange, options) => (
+    <fieldset className="mb-4">
+      <legend className="block text-sm font-medium text-gray-700 mb-2">{label}</legend>
+      <div className="grid grid-cols-2 gap-2">
+        {options.map((opt) => (
+          <label key={opt} className="inline-flex items-center">
+            <input
+              type="checkbox"
+              value={opt}
+              checked={values.includes(opt)}
+              onChange={(e) => {
+                const { checked, value } = e.target;
+                if (checked) onChange([...values, value]);
+                else onChange(values.filter((v) => v !== value));
+              }}
+              className="h-4 w-4 text-pink-600 border-gray-300 rounded"
+            />
+            <span className="ml-2 text-sm text-gray-700">{opt}</span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  );
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
       {/* Abertay logo */}
@@ -79,7 +111,7 @@ export default function DemographicsPage() {
         <h1 className="text-2xl font-bold text-center mb-4">Tell us about you</h1>
 
         {renderSelect("Age range", age, setAge, [
-          "18-24","25-34","35-44","45-54","55-64","65+","Prefer not to say"
+          "Under 18","18-24","25-34","35-44","45-54","55-64","65+","Prefer not to say"
         ])}
 
         {renderSelect("Gender", gender, setGender, [
@@ -142,7 +174,9 @@ export default function DemographicsPage() {
           "Advanced","Beginner","Expert","Intermediate","None","Prefer not to say"
         ])}
 
-        {renderSelect("Country of birth", country, setCountry, countries)}
+        {renderSelect("First language", firstLanguage, setFirstLanguage, languages)}
+
+        {renderCheckboxGroup("I have used the below apps before", appsUsed, setAppsUsed, datingApps)}
 
         <button
           onClick={handleProceed}
@@ -159,4 +193,4 @@ export default function DemographicsPage() {
     </div>
   );
 }
-// This code defines a React component for a demographics page in a web application. It collects demographic information from participants after they have given consent. The component includes form fields for
+// This code defines a React component for a demographics page in a web application. It collects demographic information from users such as age

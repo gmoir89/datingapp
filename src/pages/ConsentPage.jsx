@@ -69,7 +69,7 @@ export default function ConsentPage() {
         {/* Instructions */}
         <h2 className="font-semibold">Instructions</h2>
         <p>
-          You’ll see a profile picture and an “About me” description for each user. Select “Human” or “AI” based on whether you believe the profile is real or generated. Next, use the slider (0 = not confident, 10 = confident) to indicate how sure you are of your decision. Finally, click “Next” to move on. You can quit at any time by closing the browser tab—your responses won’t be saved if you do.
+          You’ll see a profile picture and an “About me” description for each user. Select “Human” or “AI” based on whether you believe the profile is real or AI generated. Next, use the slider (0 = not confident, 10 = confident) to indicate how sure you are of your decision. Finally, click “Next” to move on. You can quit at any time by closing the browser tab—your responses won’t be saved if you do.
         </p>
 
         {/* Data (renamed for consistency) */}
