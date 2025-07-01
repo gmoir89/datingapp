@@ -5,7 +5,7 @@ import { db } from "../firebase";
 import { useStudy } from "../context/StudyContext";
 
 const countries = [
-  "United Kingdom", "United States", "Canada", "Australia", "India", "Germany", "France", "Other", "Prefer not to say"
+  "Australia", "Canada", "France", "Germany", "India", "United Kingdom", "United States", "Other", "Prefer not to say"
 ];
 
 export default function DemographicsPage() {
@@ -77,21 +77,71 @@ export default function DemographicsPage() {
       />
       <div className="bg-white rounded-3xl shadow-xl p-8 max-w-xl space-y-4">
         <h1 className="text-2xl font-bold text-center mb-4">Tell us about you</h1>
+
         {renderSelect("Age range", age, setAge, [
-          "Under 18","18-24","25-34","35-44","45-54","55-64","65+","Prefer not to say"
+          "18-24","25-34","35-44","45-54","55-64","65+","Prefer not to say"
         ])}
+
         {renderSelect("Gender", gender, setGender, [
-          "Male","Female","Non-binary","Other","Prefer not to say"
+          "Female","Male","Non-binary","Other","Prefer not to say"
         ])}
+
         {renderSelect("Education level", education, setEducation, [
-          "High School","Undergraduate degree","Graduate degree","Postgraduate degree","Prefer not to say"
+          "None","Standard Grade/GCSE","Higher/Advanced Higher/A-Level","HNC/HND","Graduate degree","Postgraduate degree","Undergraduate degree","Other","Prefer not to say"
         ])}
-        {renderSelect("Ethnicity", ethnicity, setEthnicity, [
-          "White","Black","Asian","Hispanic","Other","Prefer not to say"
-        ])}
+
+        {/* Ethnicity dropdown with optgroups */}
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Ethnicity
+          <select
+            value={ethnicity}
+            onChange={(e) => setEthnicity(e.target.value)}
+            className="mt-1 block w-full rounded-md border-gray-300 p-2"
+          >
+            <option value="" disabled>-- Select --</option>
+            <optgroup label="Asian">
+              <option value="Asian Bangladeshi">Bangladeshi</option>
+              <option value="Asian Chinese">Chinese</option>
+              <option value="Asian Indian">Indian</option>
+              <option value="Asian Other">Any other Asian background</option>
+              <option value="Asian Pakistani">Pakistani</option>
+            </optgroup>
+            <optgroup label="Black">
+              <option value="Black African">African</option>
+              <option value="Black African American">African American</option>
+              <option value="Black Caribbean">Caribbean</option>
+              <option value="Black Other">Any other Black background</option>
+            </optgroup>
+            <optgroup label="Mixed or Multiple ethnic groups">
+              <option value="Mixed White and Black African">White and Black African</option>
+              <option value="Mixed White and Black Caribbean">White and Black Caribbean</option>
+              <option value="Mixed White Other">Any other Mixed or Multiple background</option>
+            </optgroup>
+            <optgroup label="Other ethnic groups">
+              <option value="Arab">Arab</option>
+              <option value="Hispanic">Hispanic</option>
+              <option value="Latino">Latino</option>
+              <option value="Native American">Native American</option>
+              <option value="Pacific Islander">Pacific Islander</option>
+              <option value="Other">Any other ethnic group</option>
+            </optgroup>
+            <optgroup label="White">
+              <option value="White English">English</option>
+              <option value="White Gypsy or Irish Traveller">Gypsy or Irish Traveller</option>
+              <option value="White Irish">Irish</option>
+              <option value="White Northern Irish">Northern Irish</option>
+              <option value="White Other">Any other White background</option>
+              <option value="White Scottish">Scottish</option>
+              <option value="White Welsh">Welsh</option>
+            </optgroup>
+            <option value="Prefer not to say">Prefer not to say</option>
+          </select>
+        </label>
+
         {renderSelect("Experience with technology", techExperience, setTechExperience, [
-          "None","Beginner","Intermediate","Advanced","Expert","Prefer not to say"
+          "Advanced","Beginner","Expert","Intermediate","None","Prefer not to say"
         ])}
+
         {renderSelect("Country of birth", country, setCountry, countries)}
 
         <button
@@ -109,3 +159,4 @@ export default function DemographicsPage() {
     </div>
   );
 }
+// This code defines a React component for a demographics page in a web application. It collects demographic information from participants after they have given consent. The component includes form fields for

@@ -51,22 +51,31 @@ export default function ConsentPage() {
         {/* Intro */}
         <p>Thank you for taking part in this research project; your contribution is valuable.</p>
 
+        {/* Contact for queries */}
+        <p>
+          If you have any questions concerning the study or how your data is stored, please email Graeme Moir at{' '}
+          <a href="mailto:2404561@uad.ac.uk" className="text-blue-600 underline hover:text-blue-800">
+            2404561@uad.ac.uk
+          </a>{' '}
+          and a response will be provided as soon as possible.
+        </p>
+
         {/* Nature */}
         <h2 className="font-semibold">Nature of research</h2>
         <p>
-          The aim of this website is to gauge how easy it is for a standard user to tell what appears to be a ‘real’ dating profile and what is ‘fake’. You will see 30 profiles and it is your job to decide whether you think the profile is real, AI-generated, or you are not sure.
+          The aim of this website is to gauge how easy it is for a standard user to tell what appears to be a ‘real’ dating profile and what is ‘fake’. You will see 30 profiles and it is your job to decide whether you think the profile photo is real or AI-generated.
         </p>
 
         {/* Instructions */}
         <h2 className="font-semibold">Instructions</h2>
         <p>
-          Select one of the three options for each profile, then use the slider to indicate how confident you are in your choice. When you are ready to move onto the next profile, click “Next.” You can quit at any time by closing the tab or clicking “Quit”—if you do, your responses won’t be saved.
+          You’ll see a profile picture and an “About me” description for each user. Select “Human” or “AI” based on whether you believe the profile is real or generated. Next, use the slider (0 = not confident, 10 = confident) to indicate how sure you are of your decision. Finally, click “Next” to move on. You can quit at any time by closing the browser tab—your responses won’t be saved if you do.
         </p>
 
         {/* Data (renamed for consistency) */}
         <h2 className="font-semibold">Data</h2>
         <p>
-          Your data will be stored in anonymised form and processed as outlined in the Participant Information Sheet and Consent Form (Approval Code#). You may withdraw your data until <strong>01/08/2025</strong>. After anonymisation, we cannot identify or remove your specific responses.
+          Your data will be stored in anonymised form and processed as outlined in the Participant Information Sheet and Consent Form (Approval Code# EMS10513). After anonymisation, we cannot identify or remove your specific responses.
         </p>
 
         {/* Retention */}
@@ -78,7 +87,7 @@ export default function ConsentPage() {
         {/* Support */}
         <h2 className="font-semibold">Sources of support</h2>
         <p>
-          If participating raised any issues, you can contact Action Fraud on 0300 123 2040 or visit{" "}
+          If participating raised any issues, you can contact Action Fraud on 0300 123 2040 or visit{' '}
           <a
             href="https://www.actionfraud.police.uk/a-z-of-fraud/dating-fraud"
             target="_blank"
@@ -92,7 +101,7 @@ export default function ConsentPage() {
         {/* Consent Statement */}
         <h2 className="font-semibold">Consent Statement</h2>
         <p>
-          Abertay University attaches high priority to the ethical conduct of research. Please consider the following before indicating your consent on this form. Indicating your consent confirms that you are willing to participate in the research, however, indicating consent does not commit you to anything you do not wish to do and you are free to withdraw at any time.
+          Abertay University attaches high priority to the ethical conduct of research. By clicking the box below you confirm that you agree to take part in this study and that your information may be stored and used for the purposes of this research.
         </p>
         <p>You are indicating consent under the following assumptions:</p>
         <ul className="list-disc list-outside pl-5 space-y-2">
@@ -111,18 +120,18 @@ export default function ConsentPage() {
             className="mt-1 accent-pink-600 w-5 h-5"
           />
           <span className="select-none">
-            Please tick the box to confirm you are happy to take part
+            Please tick the box to confirm you agree to participate and to the storage of your information.
           </span>
         </label>
 
         {/* Contact */}
         <h2 className="font-semibold pt-4">Contact</h2>
         <p>
-          For questions, contact Graeme Moir at{" "}
+          For questions, contact Graeme Moir at{' '}
           <a href="mailto:2404561@uad.ac.uk" className="text-blue-600 underline hover:text-blue-800">
             2404561@uad.ac.uk
-          </a>{" "}
-          or Dr. Lynsay Shepherd at{" "}
+          </a>{' '}
+          or Dr. Lynsay Shepherd at{' '}
           <a href="mailto:lynsay.shepherd@abertay.ac.uk" className="text-blue-600 underline hover:text-blue-800">
             lynsay.shepherd@abertay.ac.uk
           </a>.
@@ -142,5 +151,5 @@ export default function ConsentPage() {
     </div>
   );
 }
-// This page displays the consent form for the study, requiring users to agree before proceeding.
+// This page serves as the consent form for participants.
 // It collects consent and creates a participant record in Firestore.

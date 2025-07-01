@@ -319,7 +319,7 @@ export default function RatingPage() {
           className="w-full accent-pink-500 cursor-pointer mb-2"
         />
         <div className="flex justify-between text-xs text-gray-500 mb-6">
-          <span>Not confident</span>
+          <span>Not certain</span>
           <span>Certain</span>
         </div>
 

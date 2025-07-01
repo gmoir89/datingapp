@@ -4,7 +4,7 @@ export default function DebriefPage() {
   const navigate = useNavigate();
 
   // Optional: allow restarting the study
-  const restart = () => navigate("/", { replace: true });
+  // const restart = () => navigate("/", { replace: true });
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4">
@@ -19,14 +19,14 @@ export default function DebriefPage() {
         </p>
         <h2 className="font-semibold">Nature of Research</h2>
         <p>
-          This study aimed to understand how easily a typical user can distinguish between real and AI-generated dating profiles. We asked you to review 30 profiles and classify each as real, AI-generated, or unsure. Your participation helps us evaluate the effectiveness of visual and textual cues in identifying synthetic content.
+          This study aimed to understand how easily a typical user can distinguish between real and AI-generated dating profiles. We asked you to review 30 profiles and classify each as real or AI-generated. Your participation helps us evaluate the effectiveness of visual and textual cues in identifying synthetic content.
         </p>
 
-        {/* Data */}
+        {/* Data
         <h2 className="font-semibold">Data</h2>
         <p>
           Your data will be stored, shared, and processed as outlined in the Participant Information Sheet and Consent Form (Approval Code#). If you no longer wish to participate, you may withdraw your data until <strong>01/08/2025</strong>. After anonymisation, we cannot identify or remove your specific data.
-        </p>
+        </p> */}
 
         {/* Sources of Support */}
         <h2 className="font-semibold">Sources of support</h2>
@@ -68,14 +68,15 @@ export default function DebriefPage() {
         </p>
 
         <p>Thank you once again for taking part in the research!</p>
+        <p>You can now close the browser.</p>
 
-        {/* Restart Button */}
+        {/* Restart Button
         <button
           onClick={restart}
           className="mt-4 w-full py-3 rounded-full font-medium bg-pink-600 text-white hover:bg-pink-700 transition"
         >
           Start Again
-        </button>
+        </button> */}
       </div>
     </div>
   );
