@@ -284,7 +284,7 @@ export default function RatingPage() {
         <p className="text-gray-600 text-sm mb-4">{p.bio}</p>
 
         <p className="text-xs text-gray-500 mb-4">Profile {completed + 1} of 30</p>
-        <p className="text-sm text-gray-700 mb-2">Please select one of the options below:</p>
+        <p className="text-sm text-gray-700 mb-2">Do you think this profile is a human or AI generated?:</p>
 
         <div className="flex justify-around mb-6">
           {[

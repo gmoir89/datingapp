@@ -29,30 +29,29 @@ export default function DemographicsPage() {
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [education, setEducation] = useState("");
-  const [ethnicity, setEthnicity] = useState("");
   const [techExperience, setTechExperience] = useState("");
   const [firstLanguage, setFirstLanguage] = useState("");
   const [appsUsed, setAppsUsed] = useState([]);
   const [saving, setSaving] = useState(false);
 
   // Check that required fields are selected
-  const allSelected = [age, gender, education, ethnicity, techExperience, firstLanguage]
+  const allSelected = [age, gender, education, techExperience, firstLanguage]
     .every((field) => field !== "");
 
-  // Proceed to rating page after saving demographics
+  // Proceed to instructions page after saving demographics
   const handleProceed = async () => {
     if (!allSelected || !participantId) return;
     setSaving(true);
     try {
       const participantRef = doc(db, "participants", participantId);
       await updateDoc(participantRef, {
-        demographics: { age, gender, education, ethnicity, techExperience, firstLanguage, appsUsed },
+        demographics: { age, gender, education, techExperience, firstLanguage, appsUsed },
         demographicsAt: serverTimestamp(),
       });
-      navigate("/rate", { replace: true });
+      navigate("/instructions", { replace: true });
     } catch (err) {
       console.error("Error saving demographics:", err);
-      alert("Failed to save your responses. Please try again.");
+      alert(`Error saving your responses: ${err.message}`);
       setSaving(false);
     }
   };
@@ -111,7 +110,7 @@ export default function DemographicsPage() {
         <h1 className="text-2xl font-bold text-center mb-4">Tell us about you</h1>
 
         {renderSelect("Age range", age, setAge, [
-          "Under 18","18-24","25-34","35-44","45-54","55-64","65+","Prefer not to say"
+          "18-24","25-34","35-44","45-54","55-64","65+","Prefer not to say"
         ])}
 
         {renderSelect("Gender", gender, setGender, [
@@ -121,54 +120,6 @@ export default function DemographicsPage() {
         {renderSelect("Education level", education, setEducation, [
           "None","Standard Grade/GCSE","Higher/Advanced Higher/A-Level","HNC/HND","Graduate degree","Postgraduate degree","Undergraduate degree","Other","Prefer not to say"
         ])}
-
-        {/* Ethnicity dropdown with optgroups */}
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Ethnicity
-          <select
-            value={ethnicity}
-            onChange={(e) => setEthnicity(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 p-2"
-          >
-            <option value="" disabled>-- Select --</option>
-            <optgroup label="Asian">
-              <option value="Asian Bangladeshi">Bangladeshi</option>
-              <option value="Asian Chinese">Chinese</option>
-              <option value="Asian Indian">Indian</option>
-              <option value="Asian Other">Any other Asian background</option>
-              <option value="Asian Pakistani">Pakistani</option>
-            </optgroup>
-            <optgroup label="Black">
-              <option value="Black African">African</option>
-              <option value="Black African American">African American</option>
-              <option value="Black Caribbean">Caribbean</option>
-              <option value="Black Other">Any other Black background</option>
-            </optgroup>
-            <optgroup label="Mixed or Multiple ethnic groups">
-              <option value="Mixed White and Black African">White and Black African</option>
-              <option value="Mixed White and Black Caribbean">White and Black Caribbean</option>
-              <option value="Mixed White Other">Any other Mixed or Multiple background</option>
-            </optgroup>
-            <optgroup label="Other ethnic groups">
-              <option value="Arab">Arab</option>
-              <option value="Hispanic">Hispanic</option>
-              <option value="Latino">Latino</option>
-              <option value="Native American">Native American</option>
-              <option value="Pacific Islander">Pacific Islander</option>
-              <option value="Other">Any other ethnic group</option>
-            </optgroup>
-            <optgroup label="White">
-              <option value="White English">English</option>
-              <option value="White Gypsy or Irish Traveller">Gypsy or Irish Traveller</option>
-              <option value="White Irish">Irish</option>
-              <option value="White Northern Irish">Northern Irish</option>
-              <option value="White Other">Any other White background</option>
-              <option value="White Scottish">Scottish</option>
-              <option value="White Welsh">Welsh</option>
-            </optgroup>
-            <option value="Prefer not to say">Prefer not to say</option>
-          </select>
-        </label>
 
         {renderSelect("Experience with technology", techExperience, setTechExperience, [
           "Advanced","Beginner","Expert","Intermediate","None","Prefer not to say"
@@ -187,10 +138,11 @@ export default function DemographicsPage() {
               : 'bg-gray-300 text-gray-500 cursor-not-allowed'
           }`}
         >
-          {saving ? 'Saving...' : 'Proceed to Ratings'}
+          {saving ? 'Saving...' : 'Proceed to Instructions'}
         </button>
       </div>
     </div>
   );
 }
-// This code defines a React component for a demographics page in a web application. It collects demographic information from users such as age
+// This code defines a React component for a demographics page in a web application.
+// It collects demographic information from participants in a study, such as age  

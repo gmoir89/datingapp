@@ -4,6 +4,7 @@ import { StudyProvider } from "./context/StudyContext";
 import RequireConsent from "./components/RequireConsent";
 import ConsentPage from "./pages/ConsentPage";
 import DemographicsPage from "./pages/DemographicsPage";
+import InstructionsPage from "./pages/InstructionsPage";
 import RatingPage from "./pages/RatingPage";
 import DebriefPage from "./pages/DebriefPage";
 
@@ -27,6 +28,16 @@ function App() {
             element={
               <RequireConsent>
                 <DemographicsPage />
+              </RequireConsent>
+            }
+          />
+
+          {/* Protected: Instructions page requires consent */}
+          <Route
+            path="/instructions"
+            element={
+              <RequireConsent>
+                <InstructionsPage />
               </RequireConsent>
             }
           />
@@ -60,7 +71,14 @@ function App() {
 }
 
 export default App;
-// This file sets up the main application structure, routing, and context provider for managing study state.
-// It ensures that users must give consent before accessing any study-related pages, and uses React Router for navigation.
-// The RequireConsent component acts as a guard to protect routes that require user consent, ensuring
-// that the study's integrity is maintained and participants are properly informed before proceeding with the study tasks
+// This code defines the main structure of a React application that implements a study on AI-generated dating profiles.
+// It uses React Router for navigation and Firebase for data storage.
+// The application includes pages for consent, demographics, instructions, rating profiles, and debriefing.
+// The `StudyProvider` context manages the participant's consent state across the app.
+// The `RequireConsent` component ensures that participants cannot access protected pages without giving consent first.
+// The app is designed to be hosted on platforms like GitHub Pages using HashRouter for URL management.
+// The `App` component sets up the routing and wraps everything in the `StudyProvider` context.
+// The `Routes` component defines the different pages of the study, with route guards to ensure consent is given before accessing protected pages.
+// The `Navigate` component is used to redirect users to the consent page if they try to access an unknown route.
+// The application is structured to guide participants through the study process, ensuring they understand their rights and the purpose of the research.
+
