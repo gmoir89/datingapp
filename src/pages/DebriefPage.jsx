@@ -64,7 +64,10 @@ export default function DebriefPage() {
           <a href="mailto:2404561@uad.ac.uk" className="text-blue-600 underline hover:text-blue-800">
             2404561@uad.ac.uk
           </a>
-          .
+          or {' '}
+          <a href="mailto:lynsay.shepherd@abertay.ac.uk" className="text-blue-600 underline hover:text-blue-800">
+            lynsay.shepherd@abertay.ac.uk
+          </a>.
         </p>
 
         <p>Thank you once again for taking part in the research!</p>
