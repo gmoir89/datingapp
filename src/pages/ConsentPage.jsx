@@ -65,13 +65,16 @@ export default function ConsentPage() {
         {/* How will you handle my data? */}
         <h2 className="font-semibold">How will you handle my data?</h2>
         <p>
-          Your responses will be stored in a pseudonymised form in a secure Firestore database managed by Abertay University (DataProtectionOfficer@abertay.ac.uk). Only the research team and supervisors can access raw data. No personal identifiers are collected, and data is anonymised at the earliest opportunity.
+          Your data will be stored in an anonymized form and will only be accessible to the researcher. This means that nobody including the researcher could reasonably identify you within the data. Your data will be stored in a local database, with data fully anonymised at the point of collection. Your responses are treated in the strictest confidence - it will be impossible to identify individuals within a dataset when any of the research is disseminated (e.g., in publications/presentations/datasets). Abertay University acts as Data Controller (DataProtectionOfficer@abertay.ac.uk).
         </p>
 
         {/* Retention of research data */}
         <h2 className="font-semibold">Retention of research data</h2>
         <p>
-          Researchers must retain research data for up to 10 years post‑publication. Anonymised datasets may be retained indefinitely for open research purposes.
+          Researchers are obliged to retain research data for up to 10 years’ post-publication, however your anonymised research data may be retained indefinitely (e.g., so that researchers engage in open research, and other researchers can access their data to confirm the conclusions of published work). Consistent with our data retention
+ 
+policy, researchers retain consent forms for as long as we continue to hold information about a data subject and for 10 years for published research (including Research Degree thesis).
+
         </p>
 
         {/* Consent statement */}
