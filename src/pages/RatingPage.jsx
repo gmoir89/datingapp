@@ -1,8 +1,8 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "../firebase";
+import { db, auth, authReady } from "../firebase";
 import { useStudy } from "../context/StudyContext";
 
 // Profile data (8 sample profiles, will loop until 30 ratings given)
@@ -232,75 +232,91 @@ function shuffleArray(arr) {
 }
 
 export default function RatingPage() {
-  // Shuffle profiles once
   const shuffledProfiles = useMemo(() => shuffleArray([...profiles]), []);
   const [index, setIndex] = useState(0);
-  const [label, setLabel] = useState(null);       // "Human" | "AI"
-  const [score, setScore] = useState(5);          // Confidence slider (0–10)
-  const [completed, setCompleted] = useState(0);   // Number of ratings given
+  const [label, setLabel] = useState(null);
+  const [score, setScore] = useState(5);
+  const [completed, setCompleted] = useState(0);
+  const [ready, setReady] = useState(false);
+  const [saving, setSaving] = useState(false);
   const navigate = useNavigate();
   const { participantId } = useStudy();
 
+  // Wait for anonymous auth once
+  useEffect(() => {
+    let mounted = true;
+    authReady
+      .then(() => mounted && setReady(true))
+      .catch((e) => console.error("Auth not ready:", e));
+    return () => { mounted = false; };
+  }, []);
+
   const handleNext = async () => {
+    if (!participantId) {
+      console.error("Missing participantId; not saving.");
+      alert("Something went wrong identifying your session. Please refresh and try again.");
+      return;
+    }
     const p = shuffledProfiles[index];
+    setSaving(true);
     try {
-      await addDoc(
-        collection(db, "participants", participantId, "ratings"),
-        {
-          profileId: p.id,
-          profileName: p.name,
-          label,
-          score,
-          createdAt: serverTimestamp(),
-        }
-      );
+      await authReady; // ensure we’re signed in
+      await addDoc(collection(db, "participants", participantId, "ratings"), {
+        profileId: p.id,
+        profileName: p.name,
+        label,
+        score,
+        uid: auth.currentUser?.uid || null,
+        createdAt: serverTimestamp(),
+      });
     } catch (error) {
       console.error("Error saving rating:", error);
+      alert("Couldn’t save that rating. Check your connection and try again.");
+      setSaving(false);
+      return;
     }
+    setSaving(false);
 
     const nextCompleted = completed + 1;
     if (nextCompleted >= 30) {
       navigate("/debrief", { replace: true });
       return;
     }
-
     setCompleted(nextCompleted);
     setIndex((prev) => (prev + 1) % shuffledProfiles.length);
     setLabel(null);
     setScore(5);
   };
 
-  const handleQuit = () => {
-    navigate("/debrief", { replace: true });
-  };
-
   const p = shuffledProfiles[index];
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-pink-200 p-4">
-      <div className="bg-white rounded-3xl shadow-xl p-6 w-80 text-center">
+      <div className="bg-white rounded-3xl shadow-xl p-6 w-80 text-center opacity-100">
+        {!ready && (
+          <p className="text-sm text-gray-600 mb-3">
+            Initialising securely… one moment.
+          </p>
+        )}
+
         <img src={p.img} alt={p.name} className="rounded-xl w-full h-64 object-cover mb-4" />
         <h2 className="text-xl font-semibold">{p.name}, {p.age}</h2>
         <p className="text-gray-600 text-sm mb-4">{p.bio}</p>
 
         <p className="text-xs text-gray-500 mb-4">Profile {completed + 1} of 30</p>
-        <p className="text-sm text-gray-700 mb-2">Do you think this profile is a human or AI generated?:</p>
+        <p className="text-sm text-gray-700 mb-2">Do you think this profile is a human or AI generated?</p>
 
         <div className="flex justify-around mb-6">
-          {[
-            { key: "Human", label: "Human" },
-            { key: "AI", label: "AI" },
-          ].map((btn) => (
+          {["Human","AI"].map((k) => (
             <button
-              key={btn.key}
-              onClick={() => setLabel(btn.key)}
+              key={k}
+              onClick={() => setLabel(k)}
               className={`px-4 py-2 rounded-full border focus:outline-none transition ${
-                label === btn.key
-                  ? 'bg-pink-500 text-white border-pink-500'
-                  : 'border-gray-300 text-gray-700 hover:bg-gray-100'
+                label === k ? "bg-pink-500 text-white border-pink-500"
+                             : "border-gray-300 text-gray-700 hover:bg-gray-100"
               }`}
             >
-              {btn.label}
+              {k}
             </button>
           ))}
         </div>
@@ -319,27 +335,18 @@ export default function RatingPage() {
           className="w-full accent-pink-500 cursor-pointer mb-2"
         />
         <div className="flex justify-between text-xs text-gray-500 mb-6">
-          <span>Not certain</span>
-          <span>Certain</span>
+          <span>Not certain</span><span>Certain</span>
         </div>
 
         <button
           onClick={handleNext}
-          disabled={!label}
+          disabled={!label || !ready || saving}
           className="bg-pink-500 hover:bg-pink-600 rounded-full p-4 transition mx-auto block disabled:opacity-50"
+          title={!ready ? "Please wait while we initialise." : undefined}
         >
           <ArrowRight className="text-white w-6 h-6" />
         </button>
-
-        {/* <button onClick={handleQuit} className="mt-4 text-sm text-gray-700 hover:text-gray-900">
-          Quit
-        </button> */}
       </div>
     </div>
   );
 }
-// This component handles the rating of profiles, allowing users to select whether they think a profile is human or AI, rate their confidence, and navigate through the profiles. It saves each rating to Firestore and tracks the number of completed ratings. The UI is styled with Tailwind CSS for a clean look.
-// The profiles are shuffled once at the start to ensure a random order for each user. The component uses React hooks to manage state and effects, and it integrates with Firebase Firestore to save user ratings. The user can quit at any time, which will redirect them to the debrief page. The UI is designed to be responsive and user-friendly, with clear instructions and feedback.
-// The component also includes a quit button that allows users to exit the rating process at any time, redirecting them to the debrief page. The use of Tailwind CSS ensures a clean and modern design, while the logic for handling ratings and navigation is straightforward and efficient. The component is designed to be intuitive, guiding users through the rating process with clear prompts and feedback.
-// The profiles are shuffled once at the start to ensure a random order for each user. The component uses React hooks to manage state and effects, and it integrates with Firebase Firestore to save user ratings. The user can quit at any time, which will redirect them to the debrief page. The UI is designed to be responsive and user-friendly, with clear instructions and feedback.
-// The component also includes a quit button that allows users to exit the rating process at any time, redirecting them to the debrief page.

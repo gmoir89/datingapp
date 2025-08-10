@@ -1,10 +1,15 @@
-// This file initializes Firebase, Authentication, and exports Firestore for the web application.
-// Data collected will be used to improve fake profile detection algorithms.
+// firebase.js
+// Initializes Firebase, Firestore, and Anonymous Auth, and exposes a promise you can await.
+
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth, signInAnonymously } from "firebase/auth";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signInAnonymously,
+} from "firebase/auth";
 
-// Your Firebase web app configuration
+// ---- Config (Create React App reads REACT_APP_* at build time) ----
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
@@ -14,18 +19,37 @@ const firebaseConfig = {
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firestore
+// Firestore
 export const db = getFirestore(app);
 
-// Initialize Authentication and sign in anonymously
+// Auth
 export const auth = getAuth(app);
-signInAnonymously(auth).catch((error) => {
-  console.error("Anonymous sign-in failed:", error);
+
+// Expose a promise that resolves once we have a user (after anon sign-in if needed).
+export const authReady = new Promise((resolve, reject) => {
+  const unsub = onAuthStateChanged(auth, async (user) => {
+    try {
+      if (!user) {
+        await signInAnonymously(auth);
+        // onAuthStateChanged will fire again with a user; we’ll resolve then.
+        return;
+      }
+      unsub();
+      resolve(user);
+    } catch (e) {
+      console.error("Anonymous sign-in failed:", e);
+      unsub();
+      reject(e);
+    }
+  });
 });
 
-console.log("Firebase config loaded", firebaseConfig);
-// Export Firebase app for use in other parts of the application
+// (Safe to log; apiKey is public client-side)
+console.log("Firebase config loaded", {
+  projectId: firebaseConfig.projectId,
+  authDomain: firebaseConfig.authDomain,
+});
+
 export default app;
