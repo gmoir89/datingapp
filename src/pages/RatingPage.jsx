@@ -222,7 +222,7 @@ const profiles = [
   },
 ];
 
-// Fisher-Yates shuffle
+// Fisher–Yates shuffle
 function shuffleArray(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -292,16 +292,29 @@ export default function RatingPage() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-pink-200 p-4">
-      <div className="bg-white rounded-3xl shadow-xl p-6 w-80 text-center opacity-100">
+      <div
+        className="bg-white rounded-3xl shadow-xl p-6 w-80 text-center opacity-100"
+        data-profile-root
+        data-profile-id={p.id}
+      >
         {!ready && (
           <p className="text-sm text-gray-600 mb-3">
             Initialising securely… one moment.
           </p>
         )}
 
-        <img src={p.img} alt={p.name} className="rounded-xl w-full h-64 object-cover mb-4" />
+        <img
+          src={p.img}
+          alt={p.name}
+          className="rounded-xl w-full h-64 object-cover mb-4"
+          data-profile-image
+          crossOrigin="anonymous"
+          loading="eager"
+        />
         <h2 className="text-xl font-semibold">{p.name}, {p.age}</h2>
-        <p className="text-gray-600 text-sm mb-4">{p.bio}</p>
+        <p className="text-gray-600 text-sm mb-4" data-profile-bio>
+          {p.bio}
+        </p>
 
         <p className="text-xs text-gray-500 mb-4">Profile {completed + 1} of 30</p>
         <p className="text-sm text-gray-700 mb-2">Do you think this profile is a human or AI generated?</p>
